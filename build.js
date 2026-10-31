@@ -71,7 +71,7 @@ function tagsFor(v) {
 
 function venueSummary(v) {
   const c = cityOf(v);
-  const kind = v.setting ? SETTING[v.setting].toLowerCase() + ' ' : '';
+  const kind = v.setting ? SETTING[v.setting].toLowerCase().replace(' + ', ' and ') + ' ' : '';
   let s = `${v.name} is ${/^[aeiou]/i.test(kind || 'p') ? 'an' : 'a'} ${kind}pickleball venue in ${v.area}, ${c.name}`;
   s += v.courts ? ` with ${plural(v.courts, 'court', 'courts')}.` : '.';
   if (v.access === 'free') s += ' It is listed as free to play.';
@@ -470,7 +470,6 @@ for (const v of venues) {
   const ok = indexable(c);
   const trail = [{ name: 'Home', url: '/' }, { name: country.name, url: `/${country.slug}/` }, { name: c.name, url: cityUrl(c) }, { name: v.name, url: venueUrl(v) }];
   const nearby = venuesIn(c).filter((x) => x.slug !== v.slug).slice(0, 6);
-  const nc = '<span class="nc">Not confirmed</span>';
   const gal = galleryFor(v);
   const galleryHtml = gal.real
     ? gal.list.map((p, i) => `<figure class="g${i}"><img src="${esc(p.src)}" alt="${esc(p.alt || v.name)}" loading="${i ? 'lazy' : 'eager'}">${p.credit ? `<figcaption>${esc(p.credit)}</figcaption>` : ''}</figure>`).join('')
@@ -478,11 +477,11 @@ for (const v of venues) {
   const tips = BEFORE_YOU_GO[v.setting === 'outdoor' ? 'outdoor' : isIndoor(v) ? 'indoor' : 'other'];
   const tel = v.phone ? v.phone.replace(/[^\d+]/g, '') : null;
   const quick = [
-    ['Courts', v.courts || '?', ICON.court],
-    ['Setting', v.setting ? SETTING[v.setting] : '?', ICON.city],
-    ['Access', v.access ? ACCESS[v.access] : '?', ICON.check],
-    ['Surface', v.surface || '?', ICON.pin],
-  ];
+    v.courts && ['Courts', v.courts, ICON.court],
+    v.setting && ['Setting', SETTING[v.setting], ICON.city],
+    v.access && ['Access', ACCESS[v.access], ICON.check],
+    v.surface && ['Surface', v.surface, ICON.pin],
+  ].filter(Boolean);
   const body = `
 <section class="page-hero">
   ${img(c.image, `Pickleball in ${c.name}`, { cls: 'hero-img', eager: true })}
@@ -500,7 +499,7 @@ for (const v of venues) {
   <div class="gallery${gal.real ? '' : ' illustrative'}">${galleryHtml}</div>
   ${gal.real ? '' : `<p class="gal-note">Photos show pickleball play in general, not this venue. Run ${esc(v.name)}? <a href="/contact/">Send us venue photos</a>.</p>`}
 
-  <div class="quick">${quick.map(([k, val, ic]) => `<div><span class="ico">${ic}</span><span><small>${k}</small><strong>${val === '?' ? 'Not confirmed' : esc(val)}</strong></span></div>`).join('')}</div>
+  ${quick.length ? `<div class="quick">${quick.map(([k, val, ic]) => `<div><span class="ico">${ic}</span><span><small>${k}</small><strong>${esc(val)}</strong></span></div>`).join('')}</div>` : '<div style="height:30px"></div>'}
 
   <div class="detail">
     <div class="vbody">
@@ -509,25 +508,21 @@ for (const v of venues) {
       ${v.accessNote ? `<p>${esc(v.accessNote)}</p>` : ''}
       ${v.bookingNote ? `<p>${esc(v.bookingNote)}</p>` : ''}
 
-      <h2>Opening hours</h2>
-      ${v.hours ? `<table class="hours"><tbody>${hoursRows(v.hours)}</tbody></table>` : `<p class="muted-box">Opening hours have not been confirmed yet. ${v.website ? `Check the <a href="${esc(v.website)}" rel="nofollow noopener" target="_blank">venue's website</a>` : 'Contact the venue'} for current hours.</p>`}
+      ${v.hours ? `<h2>Opening hours</h2><table class="hours"><tbody>${hoursRows(v.hours)}</tbody></table>` : ''}
 
-      <h2>Sessions and time slots</h2>
-      ${v.sessions ? `<ul class="sessions">${v.sessions.map((s) => `<li><strong>${esc(s.name)}</strong><span>${esc(s.when)}</span>${s.price ? `<em>${esc(s.price)}</em>` : ''}</li>`).join('')}</ul>` : ''}
-      <p class="muted-box">${v.sessions ? 'Exact time slots change daily. ' : 'Session types and times have not been confirmed yet. '}${v.website ? `See live availability on the <a href="${esc(v.website)}" rel="nofollow noopener" target="_blank">booking page</a>.` : 'Contact the venue for the current schedule.'}</p>
+      ${v.sessions ? `<h2>Sessions and time slots</h2><ul class="sessions">${v.sessions.map((s) => `<li><strong>${esc(s.name)}</strong><span>${esc(s.when)}</span>${s.price ? `<em>${esc(s.price)}</em>` : ''}</li>`).join('')}</ul>${v.website ? `<p class="muted-box">Exact time slots change daily. See live availability on the <a href="${esc(v.website)}" rel="nofollow noopener" target="_blank">booking page</a>.</p>` : ''}` : ''}
 
-      <h2>Prices</h2>
-      ${v.prices ? `<table class="hours prices"><tbody>${v.prices.map((p) => `<tr><th scope="row">${esc(p.item)}${p.note ? `<small>${esc(p.note)}</small>` : ''}</th><td>${esc(p.price)}</td></tr>`).join('')}</tbody></table>` : `<p class="muted-box">${v.access === 'free' ? 'Listed as free to play.' : 'Prices have not been confirmed yet and change often.'} ${v.website ? `Check the <a href="${esc(v.website)}" rel="nofollow noopener" target="_blank">venue's website</a> for current rates.` : ''}</p>`}
+      ${v.prices ? `<h2>Prices</h2><table class="hours prices"><tbody>${v.prices.map((p) => `<tr><th scope="row">${esc(p.item)}${p.note ? `<small>${esc(p.note)}</small>` : ''}</th><td>${esc(p.price)}</td></tr>`).join('')}</tbody></table>` : ''}
 
       ${v.amenities ? `<h2>Facilities</h2><div class="chips">${v.amenities.map((a) => `<span>${esc(a)}</span>`).join('')}</div>` : ''}
 
       <h2>Court details</h2>
       <div class="facts"><dl>
         <div><dt>Address</dt><dd>${esc(v.address)}</dd></div>
-        <div><dt>Courts</dt><dd>${v.courts || nc}</dd></div>
-        <div><dt>Indoor or outdoor</dt><dd>${v.setting ? SETTING[v.setting] : nc}</dd></div>
-        <div><dt>Surface</dt><dd>${v.surface ? esc(v.surface) : nc}</dd></div>
-        <div><dt>Access</dt><dd>${v.access ? ACCESS[v.access] : nc}</dd></div>
+        ${v.courts ? `<div><dt>Courts</dt><dd>${v.courts}</dd></div>` : ''}
+        ${v.setting ? `<div><dt>Indoor or outdoor</dt><dd>${SETTING[v.setting]}</dd></div>` : ''}
+        ${v.surface ? `<div><dt>Surface</dt><dd>${esc(v.surface)}</dd></div>` : ''}
+        ${v.access ? `<div><dt>Access</dt><dd>${ACCESS[v.access]}</dd></div>` : ''}
         <div><dt>Last checked</dt><dd>${fmtDate(v.lastChecked)}</dd></div>
       </dl></div>
 
@@ -542,11 +537,11 @@ for (const v of venues) {
 
     <aside class="vside">
       <div class="side-box sticky">
-        <h3>Contact &amp; booking</h3>
+        <h3>${v.phone || v.email || v.website ? 'Contact &amp; booking' : 'Plan your visit'}</h3>
         <ul class="contact">
-          <li><span>Phone</span>${v.phone ? `<a href="tel:${tel}">${esc(v.phone)}</a>` : nc}</li>
-          <li><span>Email</span>${v.email ? `<a href="mailto:${esc(v.email)}">${esc(v.email)}</a>` : nc}</li>
-          <li><span>Website</span>${v.website ? `<a href="${esc(v.website)}" rel="nofollow noopener" target="_blank">${esc(v.website.replace(/^https?:\/\//, '').replace(/\/$/, '').slice(0, 34))}</a>` : nc}</li>
+          ${v.phone ? `<li><span>Phone</span><a href="tel:${tel}">${esc(v.phone)}</a></li>` : ''}
+          ${v.email ? `<li><span>Email</span><a href="mailto:${esc(v.email)}">${esc(v.email)}</a></li>` : ''}
+          ${v.website ? `<li><span>Website</span><a href="${esc(v.website)}" rel="nofollow noopener" target="_blank">${esc(v.website.replace(/^https?:\/\//, '').replace(/\/$/, '').slice(0, 34))}</a></li>` : ''}
           <li><span>Address</span>${esc(v.address)}</li>
         </ul>
         ${v.website ? `<a class="btn" href="${esc(v.website)}" rel="nofollow noopener" target="_blank">Check availability</a>` : ''}

@@ -55,19 +55,6 @@
   "website": "https://www.visitfairgrounds.com/locations/capilano",
   "source": "Daily Hive; North Shore News; UrbanRec league listing",
   "lastChecked": "2026-10-31",
-  "phone": null,
-  "prices": [
-   {
-    "item": "Full court hire",
-    "price": "$40 per hour",
-    "note": "Quoted before opening; check current rates"
-   },
-   {
-    "item": "Monthly membership",
-    "price": "Available",
-    "note": "Membership is free to join; paid monthly plans are also offered"
-   }
-  ],
   "sessions": [
    {
     "name": "Court hire",
@@ -76,10 +63,6 @@
    {
     "name": "Coaching and clinics",
     "when": "For players wanting to improve"
-   },
-   {
-    "name": "Evening social leagues",
-    "when": "Seasonal leagues run by UrbanRec, for example Sundays 6pm to 10pm"
    },
    {
     "name": "Member mixers and pickleball parties",
@@ -140,25 +123,10 @@
     "when": "Hosted throughout the year"
    }
   ],
-  "prices": [
-   {
-    "item": "Paddle rental",
-    "price": "$5"
-   },
-   {
-    "item": "Balls",
-    "price": "$3 for a set of three"
-   },
-   {
-    "item": "Serving machine rental",
-    "price": "Available",
-    "note": "Ask the front desk for the rate"
-   }
-  ],
   "amenities": [
    "Equipment shop",
    "Paddle and ball rental",
-   "Ball serving machine"
+   "Ball serving machine for practice"
   ]
  },
  {
