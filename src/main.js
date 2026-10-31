@@ -29,3 +29,7 @@ buttons.forEach((btn) => {
     });
   });
 });
+
+// Highlight today's row in opening hours
+const today = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'][new Date().getDay()];
+document.querySelectorAll(`.hours tr[data-day="${today}"]`).forEach((tr) => tr.classList.add('today'));

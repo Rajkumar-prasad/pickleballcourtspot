@@ -53,8 +53,44 @@
   "access": "membership",
   "accessNote": "Membership is free to join; courts, leagues, clinics and socials run through the club.",
   "website": "https://www.visitfairgrounds.com/locations/capilano",
-  "source": "Daily Hive opening coverage",
-  "lastChecked": "2026-10-31"
+  "source": "Daily Hive; North Shore News; UrbanRec league listing",
+  "lastChecked": "2026-10-31",
+  "phone": null,
+  "prices": [
+   {
+    "item": "Full court hire",
+    "price": "$40 per hour",
+    "note": "Quoted before opening; check current rates"
+   },
+   {
+    "item": "Monthly membership",
+    "price": "Available",
+    "note": "Membership is free to join; paid monthly plans are also offered"
+   }
+  ],
+  "sessions": [
+   {
+    "name": "Court hire",
+    "when": "Book by the hour"
+   },
+   {
+    "name": "Coaching and clinics",
+    "when": "For players wanting to improve"
+   },
+   {
+    "name": "Evening social leagues",
+    "when": "Seasonal leagues run by UrbanRec, for example Sundays 6pm to 10pm"
+   },
+   {
+    "name": "Member mixers and pickleball parties",
+    "when": "Regular events, see the club calendar"
+   }
+  ],
+  "amenities": [
+   "Lounge with food and drinks",
+   "Pickleball gear and apparel for sale",
+   "Indoor mall location with parking"
+  ]
  },
  {
   "slug": "calgary-pickleball-center",
@@ -76,15 +112,54 @@
   "name": "YYC Pickleball",
   "city": "calgary",
   "area": "Northeast Calgary",
-  "address": "1108 53 Ave NE, Calgary, AB",
+  "address": "Unit 102, 1108 53 Ave NE, Calgary, AB",
   "courts": 7,
   "setting": "indoor",
-  "surface": null,
-  "access": null,
-  "accessNote": "Offers coaching for players of all levels.",
-  "website": null,
-  "source": "CTV News Calgary",
-  "lastChecked": "2026-10-31"
+  "surface": "Outdoor-quality hard surface (indoors)",
+  "access": "book",
+  "accessNote": "Non-members can book courts by the hour or come to drop-in hours. Members get one free court rental a month, priority booking and discounts.",
+  "website": "https://yycpickleball.com",
+  "source": "Avenue Calgary; CTV News Calgary",
+  "lastChecked": "2026-10-31",
+  "phone": "403-516-0089",
+  "sessions": [
+   {
+    "name": "Hourly court rental",
+    "when": "Book in advance"
+   },
+   {
+    "name": "Drop-in / open play",
+    "when": "Set drop-in hours, check the website for the current schedule"
+   },
+   {
+    "name": "Lessons",
+    "when": "Beginner to advanced, taught by IPTPA-accredited coaches"
+   },
+   {
+    "name": "Tournaments",
+    "when": "Hosted throughout the year"
+   }
+  ],
+  "prices": [
+   {
+    "item": "Paddle rental",
+    "price": "$5"
+   },
+   {
+    "item": "Balls",
+    "price": "$3 for a set of three"
+   },
+   {
+    "item": "Serving machine rental",
+    "price": "Available",
+    "note": "Ask the front desk for the rate"
+   }
+  ],
+  "amenities": [
+   "Equipment shop",
+   "Paddle and ball rental",
+   "Ball serving machine"
+  ]
  },
  {
   "slug": "ra-centre",
@@ -97,8 +172,9 @@
   "surface": null,
   "access": "membership",
   "website": "https://www.racentre.com/pickleball.html",
-  "source": "Bounce venue listing",
-  "lastChecked": "2026-10-31"
+  "source": "Bounce venue listing; 613today",
+  "lastChecked": "2026-10-31",
+  "phone": "613-733-5100"
  },
  {
   "slug": "the-jar-south-melbourne",
@@ -107,12 +183,65 @@
   "area": "South Melbourne",
   "address": "29 White Street, South Melbourne VIC 3205",
   "courts": 4,
-  "setting": null,
+  "setting": "indoor",
   "surface": "Hard court",
   "access": "book",
   "website": "https://thejar.club/southmelbourne",
-  "source": "NPL Pickleball venue list",
-  "lastChecked": "2026-10-31"
+  "source": "Aussie Pickleball Bros venue page; Only Melbourne; NPL Pickleball venue list",
+  "lastChecked": "2026-10-31",
+  "phone": "0482 074 749",
+  "email": "info@nplpickleball.com.au",
+  "hours": [
+   {
+    "days": [
+     "Mo",
+     "Tu",
+     "We",
+     "Th",
+     "Fr"
+    ],
+    "opens": "06:00",
+    "closes": "23:59"
+   },
+   {
+    "days": [
+     "Sa"
+    ],
+    "opens": "07:00",
+    "closes": "23:59"
+   },
+   {
+    "days": [
+     "Su"
+    ],
+    "opens": "06:30",
+    "closes": "23:00"
+   }
+  ],
+  "sessions": [
+   {
+    "name": "Casual court hire",
+    "when": "Any time during opening hours, booked online"
+   },
+   {
+    "name": "Open play",
+    "when": "Daily social sessions, see the booking app for times"
+   },
+   {
+    "name": "Learn-to-play days",
+    "when": "Run regularly for new players"
+   },
+   {
+    "name": "Social leagues and tournaments",
+    "when": "Seasonal, through the National Pickleball League"
+   }
+  ],
+  "amenities": [
+   "Bar with alcoholic and non-alcoholic drinks",
+   "Event space for 150+ people",
+   "Corporate and private events"
+  ],
+  "bookingNote": "Courts and sessions are booked through PlayByPoint, on the web or in the app."
  },
  {
   "slug": "the-jar-maidstone",
@@ -191,11 +320,11 @@
   "area": "Moorabbin",
   "address": "4 Nellbern Rd, Moorabbin VIC 3189",
   "courts": 4,
-  "setting": null,
+  "setting": "indoor",
   "surface": "Hard court",
   "access": "book",
   "website": "https://melbournepickleclub.playbypoint.com/book/MelbournePickleClub",
-  "source": "NPL Pickleball venue list",
+  "source": "NPL Pickleball venue list; Aussie Pickleball Bros Melbourne directory",
   "lastChecked": "2026-10-31"
  },
  {
@@ -205,11 +334,11 @@
   "area": "Wantirna South",
   "address": "Shop 9068C, Knox Ozone, Westfield Knox, Wantirna South VIC 3152",
   "courts": 4,
-  "setting": null,
+  "setting": "indoor",
   "surface": "Hard court",
   "access": "book",
   "website": "https://leveluppickleball.com.au",
-  "source": "NPL Pickleball venue list",
+  "source": "NPL Pickleball venue list; Aussie Pickleball Bros Melbourne directory",
   "lastChecked": "2026-10-31"
  },
  {
@@ -303,11 +432,11 @@
   "area": "Port Melbourne",
   "address": "20 Woodruff Street, Port Melbourne VIC",
   "courts": 8,
-  "setting": null,
+  "setting": "indoor",
   "surface": null,
   "access": "book",
   "website": "https://dinkndrivepickleballclub.playbypoint.com/book/dinkndrivepickleballclub",
-  "source": "NPL Pickleball venue list",
+  "source": "NPL Pickleball venue list; Aussie Pickleball Bros Melbourne directory",
   "lastChecked": "2026-10-31"
  },
  {
@@ -330,12 +459,12 @@
   "city": "melbourne",
   "area": "Chelsea Heights",
   "address": "Unit 38/107 Wells Rd, Chelsea Heights VIC 3196",
-  "courts": null,
+  "courts": 2,
   "setting": "indoor",
   "surface": null,
   "access": "book",
   "website": "https://kingstonpickleballcentre.com/book-a-court/",
-  "source": "NPL Pickleball venue list",
+  "source": "NPL Pickleball venue list; Aussie Pickleball Bros Melbourne directory",
   "lastChecked": "2026-10-31"
  },
  {
@@ -344,12 +473,12 @@
   "city": "melbourne",
   "area": "Knoxfield",
   "address": "1642 Ferntree Gully Rd, Knoxfield VIC 3180",
-  "courts": 6,
+  "courts": null,
   "setting": "indoor",
   "surface": null,
   "access": "book",
   "website": "https://easternindoorpickleballclub.playbypoint.com/book/easternindoorpickleballclub",
-  "source": "NPL Pickleball venue list",
+  "source": "NPL Pickleball venue list; Aussie Pickleball Bros Melbourne directory",
   "lastChecked": "2026-10-31"
  },
  {
@@ -358,12 +487,12 @@
   "city": "melbourne",
   "area": "Epping",
   "address": "143 O'Herns Rd, Epping VIC 3076",
-  "courts": null,
+  "courts": 2,
   "setting": "indoor",
   "surface": null,
   "access": "book",
   "website": "https://book.smashx.com.au",
-  "source": "NPL Pickleball venue list",
+  "source": "NPL Pickleball venue list; Aussie Pickleball Bros Melbourne directory",
   "lastChecked": "2026-10-31"
  },
  {
@@ -386,12 +515,12 @@
   "city": "melbourne",
   "area": "Carrum Downs",
   "address": "16/684-700 Frankston Dandenong Road, Carrum Downs VIC 3201",
-  "courts": null,
-  "setting": null,
+  "courts": 3,
+  "setting": "indoor",
   "surface": null,
   "access": "book",
   "website": "https://royalpickleclubbook.venuesumo.app/location/carrum-downs",
-  "source": "NPL Pickleball venue list",
+  "source": "NPL Pickleball venue list; Aussie Pickleball Bros Melbourne directory",
   "lastChecked": "2026-10-31"
  },
  {
@@ -418,10 +547,39 @@
   "setting": null,
   "surface": null,
   "access": "book",
-  "hours": "Daily, 8am to 9:30pm",
-  "website": "https://houseofpickle.com.au/",
-  "source": "Darling Harbour official visitor guide",
-  "lastChecked": "2026-10-31"
+  "hours": [
+   {
+    "days": [
+     "Mo",
+     "Tu",
+     "We",
+     "Th",
+     "Fr",
+     "Sa",
+     "Su"
+    ],
+    "opens": "08:00",
+    "closes": "21:30"
+   }
+  ],
+  "website": "https://houseofpickle.com.au/session-schedule/icc-darling-harbour/",
+  "source": "Darling Harbour official visitor guide; ICC Sydney",
+  "lastChecked": "2026-10-31",
+  "phone": "0420 900 543",
+  "sessions": [
+   {
+    "name": "Social pickleball",
+    "when": "Daily, see the session schedule"
+   },
+   {
+    "name": "Competitive sessions",
+    "when": "See the session schedule"
+   },
+   {
+    "name": "Kids learn-to-play",
+    "when": "Offered during some school holidays"
+   }
+  ]
  },
  {
   "slug": "pro-pickle-waterloo",

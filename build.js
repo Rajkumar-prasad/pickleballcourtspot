@@ -423,14 +423,66 @@ for (const c of cities) {
 }
 
 // Venue pages
+const DAY_NAMES = { Mo: 'Monday', Tu: 'Tuesday', We: 'Wednesday', Th: 'Thursday', Fr: 'Friday', Sa: 'Saturday', Su: 'Sunday' };
+const DAY_ORDER = Object.keys(DAY_NAMES);
+const SCHEMA_DAY = { Mo: 'Monday', Tu: 'Tuesday', We: 'Wednesday', Th: 'Thursday', Fr: 'Friday', Sa: 'Saturday', Su: 'Sunday' };
+function fmtTime(t) {
+  const [h, m] = t.split(':').map(Number);
+  if (h === 23 && m === 59) return 'midnight';
+  const ap = h >= 12 ? 'pm' : 'am';
+  const hh = h % 12 || 12;
+  return m ? `${hh}:${String(m).padStart(2, '0')}${ap}` : `${hh}${ap}`;
+}
+function hoursRows(hours) {
+  return DAY_ORDER.map((d) => {
+    const slot = hours.find((h) => h.days.includes(d));
+    return `<tr data-day="${d}"><th scope="row">${DAY_NAMES[d]}</th><td>${slot ? `${fmtTime(slot.opens)} to ${fmtTime(slot.closes)}` : 'Closed or not listed'}</td></tr>`;
+  }).join('');
+}
+// Photos: real venue photos (v.photos) when supplied, otherwise a set that
+// matches the venue type, clearly captioned as illustrative.
+function galleryFor(v) {
+  if (v.photos && v.photos.length) return { real: true, list: v.photos };
+  const indoorSet = ['paddle-net', 'paddle-court', 'player-serve'];
+  const outdoorSet = ['park-courts', 'night-play', 'players-sunset'];
+  const mixed = ['players-sunset', 'paddle-net', 'night-play'];
+  const base = v.setting === 'outdoor' ? outdoorSet : isIndoor(v) ? indoorSet : mixed;
+  const shift = [...v.slug].reduce((s, ch) => s + ch.charCodeAt(0), 0) % base.length;
+  return { real: false, list: base.slice(shift).concat(base.slice(0, shift)) };
+}
+const ALT = {
+  'paddle-net': 'Pickleball paddle and ball resting against the net on a blue court',
+  'paddle-court': 'Pickleball paddle and ball on a blue hard court',
+  'player-serve': 'Player hitting a pickleball',
+  'park-courts': 'Players on outdoor pickleball courts in a park',
+  'night-play': 'Doubles pickleball game in the evening',
+  'players-sunset': 'Two players with paddles on an outdoor court at sunset',
+};
+const BEFORE_YOU_GO = {
+  indoor: ['Bring court shoes with non-marking soles', 'Book ahead for evenings and weekends, which fill fastest', 'Arrive 10 minutes early to check in and warm up'],
+  outdoor: ['Check the weather and whether courts have lights before an evening game', 'Bring water, a hat and sunscreen', 'Public courts are often first come, first served'],
+  other: ['Check the booking page for current session times', 'Bring court shoes with good side support', 'Ask about paddle hire if you do not have your own'],
+};
+
 for (const v of venues) {
   const c = cityOf(v);
   const country = COUNTRIES[c.country];
   const ok = indexable(c);
   const trail = [{ name: 'Home', url: '/' }, { name: country.name, url: `/${country.slug}/` }, { name: c.name, url: cityUrl(c) }, { name: v.name, url: venueUrl(v) }];
   const nearby = venuesIn(c).filter((x) => x.slug !== v.slug).slice(0, 6);
-  const fact = (k, val) => `<div><dt>${k}</dt><dd>${val}</dd></div>`;
-  const nc = '<span style="color:var(--muted);font-weight:400">Not confirmed</span>';
+  const nc = '<span class="nc">Not confirmed</span>';
+  const gal = galleryFor(v);
+  const galleryHtml = gal.real
+    ? gal.list.map((p, i) => `<figure class="g${i}"><img src="${esc(p.src)}" alt="${esc(p.alt || v.name)}" loading="${i ? 'lazy' : 'eager'}">${p.credit ? `<figcaption>${esc(p.credit)}</figcaption>` : ''}</figure>`).join('')
+    : gal.list.map((n, i) => `<figure class="g${i}">${img(n, ALT[n], { sizes: i ? '(max-width:860px) 50vw, 380px' : '(max-width:860px) 100vw, 760px', eager: i === 0 })}</figure>`).join('');
+  const tips = BEFORE_YOU_GO[v.setting === 'outdoor' ? 'outdoor' : isIndoor(v) ? 'indoor' : 'other'];
+  const tel = v.phone ? v.phone.replace(/[^\d+]/g, '') : null;
+  const quick = [
+    ['Courts', v.courts || '?', ICON.court],
+    ['Setting', v.setting ? SETTING[v.setting] : '?', ICON.city],
+    ['Access', v.access ? ACCESS[v.access] : '?', ICON.check],
+    ['Surface', v.surface || '?', ICON.pin],
+  ];
   const body = `
 <section class="page-hero">
   ${img(c.image, `Pickleball in ${c.name}`, { cls: 'hero-img', eager: true })}
@@ -443,42 +495,82 @@ for (const v of venues) {
   </div>
   ${curve}
 </section>
-<section class="section" style="padding-top:50px"><div class="wrap detail">
-  <div>
-    <p style="font-size:1.1rem">${esc(venueSummary(v))}</p>
-    ${v.settingNote ? `<p>${esc(v.settingNote)}.</p>` : ''}
-    ${v.accessNote ? `<p>${esc(v.accessNote)}</p>` : ''}
-    <div class="facts"><dl>
-      ${fact('Address', esc(v.address))}
-      ${fact('Courts', v.courts ? v.courts : nc)}
-      ${fact('Indoor or outdoor', v.setting ? SETTING[v.setting] : nc)}
-      ${fact('Surface', v.surface ? esc(v.surface) : nc)}
-      ${fact('Access', v.access ? ACCESS[v.access] : nc)}
-      ${v.hours ? fact('Hours', esc(v.hours)) : ''}
-      ${fact('Last checked', fmtDate(v.lastChecked))}
-    </dl></div>
-    <p style="margin-top:18px;font-size:.88rem;color:var(--muted)">Source: ${esc(v.source)}. Session times, prices and court numbers can change, so confirm with ${esc(v.name)} before you travel. If anything here is wrong, <a href="/contact/">let us know</a>.</p>
-  </div>
-  <aside>
-    <div class="side-box">
-      <h3>Plan your visit</h3>
-      ${v.website ? `<a class="btn" href="${esc(v.website)}" rel="nofollow noopener" target="_blank">Book or visit website</a>` : ''}
-      <a class="btn" style="background:var(--ink);border-color:var(--ink)" href="${mapsLink(v)}" rel="noopener" target="_blank">Get directions</a>
+
+<section class="section" style="padding-top:40px"><div class="wrap">
+  <div class="gallery${gal.real ? '' : ' illustrative'}">${galleryHtml}</div>
+  ${gal.real ? '' : `<p class="gal-note">Photos show pickleball play in general, not this venue. Run ${esc(v.name)}? <a href="/contact/">Send us venue photos</a>.</p>`}
+
+  <div class="quick">${quick.map(([k, val, ic]) => `<div><span class="ico">${ic}</span><span><small>${k}</small><strong>${val === '?' ? 'Not confirmed' : esc(val)}</strong></span></div>`).join('')}</div>
+
+  <div class="detail">
+    <div class="vbody">
+      <h2>About ${esc(v.name)}</h2>
+      <p>${esc(venueSummary(v))}${v.settingNote ? ' ' + esc(v.settingNote) + '.' : ''}</p>
+      ${v.accessNote ? `<p>${esc(v.accessNote)}</p>` : ''}
+      ${v.bookingNote ? `<p>${esc(v.bookingNote)}</p>` : ''}
+
+      <h2>Opening hours</h2>
+      ${v.hours ? `<table class="hours"><tbody>${hoursRows(v.hours)}</tbody></table>` : `<p class="muted-box">Opening hours have not been confirmed yet. ${v.website ? `Check the <a href="${esc(v.website)}" rel="nofollow noopener" target="_blank">venue's website</a>` : 'Contact the venue'} for current hours.</p>`}
+
+      <h2>Sessions and time slots</h2>
+      ${v.sessions ? `<ul class="sessions">${v.sessions.map((s) => `<li><strong>${esc(s.name)}</strong><span>${esc(s.when)}</span>${s.price ? `<em>${esc(s.price)}</em>` : ''}</li>`).join('')}</ul>` : ''}
+      <p class="muted-box">${v.sessions ? 'Exact time slots change daily. ' : 'Session types and times have not been confirmed yet. '}${v.website ? `See live availability on the <a href="${esc(v.website)}" rel="nofollow noopener" target="_blank">booking page</a>.` : 'Contact the venue for the current schedule.'}</p>
+
+      <h2>Prices</h2>
+      ${v.prices ? `<table class="hours prices"><tbody>${v.prices.map((p) => `<tr><th scope="row">${esc(p.item)}${p.note ? `<small>${esc(p.note)}</small>` : ''}</th><td>${esc(p.price)}</td></tr>`).join('')}</tbody></table>` : `<p class="muted-box">${v.access === 'free' ? 'Listed as free to play.' : 'Prices have not been confirmed yet and change often.'} ${v.website ? `Check the <a href="${esc(v.website)}" rel="nofollow noopener" target="_blank">venue's website</a> for current rates.` : ''}</p>`}
+
+      ${v.amenities ? `<h2>Facilities</h2><div class="chips">${v.amenities.map((a) => `<span>${esc(a)}</span>`).join('')}</div>` : ''}
+
+      <h2>Court details</h2>
+      <div class="facts"><dl>
+        <div><dt>Address</dt><dd>${esc(v.address)}</dd></div>
+        <div><dt>Courts</dt><dd>${v.courts || nc}</dd></div>
+        <div><dt>Indoor or outdoor</dt><dd>${v.setting ? SETTING[v.setting] : nc}</dd></div>
+        <div><dt>Surface</dt><dd>${v.surface ? esc(v.surface) : nc}</dd></div>
+        <div><dt>Access</dt><dd>${v.access ? ACCESS[v.access] : nc}</dd></div>
+        <div><dt>Last checked</dt><dd>${fmtDate(v.lastChecked)}</dd></div>
+      </dl></div>
+
+      <h2>Location</h2>
+      <div class="map"><iframe title="Map of ${esc(v.name)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${encodeURIComponent(v.name + ', ' + v.address)}&output=embed"></iframe></div>
+
+      <h2>Before you go</h2>
+      <ul class="checks">${tips.map((t) => `<li>${t}</li>`).join('')}</ul>
+
+      <p class="src">Source: ${esc(v.source)}. Details can change, so confirm with ${esc(v.name)} before you travel. Spotted something wrong? <a href="/contact/">Let us know</a>.</p>
     </div>
-    ${nearby.length ? `<div class="side-box" style="margin-top:22px;background:#fff;border:1px solid var(--line)"><h3>More courts in ${c.name}</h3><ul class="mini-list">${nearby.map((x) => `<li><a href="${venueUrl(x)}">${esc(x.name)}</a><span>${esc(x.area)}${x.setting ? ' &middot; ' + SETTING[x.setting] : ''}</span></li>`).join('')}</ul><p style="margin:14px 0 0"><a href="${cityUrl(c)}">All ${c.name} courts &rarr;</a></p></div>` : ''}
-  </aside>
+
+    <aside class="vside">
+      <div class="side-box sticky">
+        <h3>Contact &amp; booking</h3>
+        <ul class="contact">
+          <li><span>Phone</span>${v.phone ? `<a href="tel:${tel}">${esc(v.phone)}</a>` : nc}</li>
+          <li><span>Email</span>${v.email ? `<a href="mailto:${esc(v.email)}">${esc(v.email)}</a>` : nc}</li>
+          <li><span>Website</span>${v.website ? `<a href="${esc(v.website)}" rel="nofollow noopener" target="_blank">${esc(v.website.replace(/^https?:\/\//, '').replace(/\/$/, '').slice(0, 34))}</a>` : nc}</li>
+          <li><span>Address</span>${esc(v.address)}</li>
+        </ul>
+        ${v.website ? `<a class="btn" href="${esc(v.website)}" rel="nofollow noopener" target="_blank">Check availability</a>` : ''}
+        ${v.phone ? `<a class="btn line" href="tel:${tel}">Call the venue</a>` : ''}
+        <a class="btn dark" href="${mapsLink(v)}" rel="noopener" target="_blank">Get directions</a>
+      </div>
+      ${nearby.length ? `<div class="side-box nearby" style="margin-top:22px;background:#fff;border:1px solid var(--line)"><h3>More courts in ${c.name}</h3><ul class="mini-list">${nearby.map((x) => `<li><a href="${venueUrl(x)}">${esc(x.name)}</a><span>${esc(x.area)}${x.setting ? ' &middot; ' + SETTING[x.setting] : ''}</span></li>`).join('')}</ul><p style="margin:14px 0 0"><a href="${cityUrl(c)}">All ${c.name} courts &rarr;</a></p></div>` : ''}
+    </aside>
+  </div>
 </div></section>`;
   const locality = v.area.replace(/\s*\(.*\)$/, '');
+  const ld = { '@context': 'https://schema.org', '@type': 'SportsActivityLocation', name: v.name, url: SITE.url + venueUrl(v), sport: 'Pickleball',
+    address: { '@type': 'PostalAddress', streetAddress: v.address, addressLocality: locality, addressRegion: c.regionShort, addressCountry: country.code } };
+  if (v.phone) ld.telephone = v.phone;
+  if (v.email) ld.email = v.email;
+  if (v.website) ld.sameAs = [v.website];
+  if (v.hours) ld.openingHoursSpecification = v.hours.map((h) => ({ '@type': 'OpeningHoursSpecification', dayOfWeek: h.days.map((d) => SCHEMA_DAY[d]), opens: h.opens, closes: h.closes }));
+  if (v.amenities) ld.amenityFeature = v.amenities.map((a) => ({ '@type': 'LocationFeatureSpecification', name: a, value: true }));
+  if (gal.real) ld.image = gal.list.map((p) => p.src);
   add(venueUrl(v), layout({
-    title: `${v.name} Pickleball, ${locality} | ${c.name} Courts`,
-    description: `${venueSummary(v)} Address, court details and booking link.`.slice(0, 300),
+    title: `${v.name} Pickleball, ${locality}: Hours, Booking & Courts`,
+    description: `${venueSummary(v)} Opening hours, sessions, prices, contact details and directions.`.slice(0, 300),
     url: venueUrl(v), body, noindex: !ok, nav: `/${country.slug}/`,
-    schema: [
-      crumbSchema(trail),
-      { '@context': 'https://schema.org', '@type': 'SportsActivityLocation', name: v.name, url: SITE.url + venueUrl(v), sport: 'Pickleball',
-        address: { '@type': 'PostalAddress', streetAddress: v.address, addressLocality: locality, addressRegion: c.regionShort, addressCountry: country.code },
-        ...(v.website ? { sameAs: [v.website] } : {}) },
-    ],
+    schema: [crumbSchema(trail), ld],
   }), { index: ok });
 }
 
