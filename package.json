@@ -1,0 +1,10 @@
+{
+  "name": "pickleballcourtspot",
+  "private": true,
+  "description": "Static pickleball court directory for Canada and Australia (pickleballcourtspot.com)",
+  "scripts": {
+    "build": "node build.js",
+    "preview": "node build.js && npx --yes serve dist"
+  },
+  "engines": { "node": ">=18" }
+}

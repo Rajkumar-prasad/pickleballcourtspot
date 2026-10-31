@@ -1,0 +1,10 @@
+[
+  { "slug": "toronto", "name": "Toronto", "region": "Ontario", "regionShort": "ON", "country": "canada", "image": "paddle-net" },
+  { "slug": "vancouver", "name": "Vancouver", "region": "British Columbia", "regionShort": "BC", "country": "canada", "image": "night-play" },
+  { "slug": "calgary", "name": "Calgary", "region": "Alberta", "regionShort": "AB", "country": "canada", "image": "paddle-court" },
+  { "slug": "ottawa", "name": "Ottawa", "region": "Ontario", "regionShort": "ON", "country": "canada", "image": "player-serve" },
+  { "slug": "melbourne", "name": "Melbourne", "region": "Victoria", "regionShort": "VIC", "country": "australia", "image": "players-sunset" },
+  { "slug": "sydney", "name": "Sydney", "region": "New South Wales", "regionShort": "NSW", "country": "australia", "image": "night-play" },
+  { "slug": "brisbane", "name": "Brisbane", "region": "Queensland", "regionShort": "QLD", "country": "australia", "image": "park-courts" },
+  { "slug": "perth", "name": "Perth", "region": "Western Australia", "regionShort": "WA", "country": "australia", "image": "player-serve" }
+]
